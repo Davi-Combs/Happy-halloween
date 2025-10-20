@@ -30,23 +30,22 @@
     z-index: 1000;
   }
 
-  .spider {
-    position: absolute;
-    top: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 100px;
-    animation: walk 4s linear infinite alternate;
-  }
+.spider {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  width: 100px;
+  height: 100px;
+  animation: walk 4s linear infinite alternate;
+}
 
   @keyframes walk {
-    0% {
-      transform: translateX(-50%);
-    }
-    100% {
-      transform: translateX(calc(100vw - 150px));
-    }
+  0% {
+    left: 0;
+  }
+  100% {
+    left: calc(100% - 100px);
+  }
   }
 
   .bug {
