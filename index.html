@@ -9,171 +9,223 @@
     padding: 0;
     background-color: #000;
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   .page-container {
-    width: 900px;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 75px;
+    width: 100%;
+    min-height: 100vh;
     position: relative;
   }
 
-  /* Bug layer - sits on top */
+  /* Spider walking across top */
   .bugs-layer {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Let clicks pass through to houses below */
+    pointer-events: none;
     z-index: 1000;
   }
 
-.spider {
-  position: absolute;
-  top: 45px;
-  left: 0;
-  width: 100px;
-  height: 100px;
-  animation: walk 4s linear infinite alternate;
-}
-
-  @keyframes walk {
-  0% {
-    left: 0;
-  }
-  100% {
-    left: calc(100% - 100px);
-  }
-  }
-
-  .bug {
+  .spider {
     position: absolute;
+    top: 45px;
+    left: 0;
     width: 100px;
     height: 100px;
+    animation: walk 8s linear infinite alternate;
   }
 
-  /* Houses grid */
+  @keyframes walk {
+    0% { left: 0; }
+    100% { left: calc(100% - 100px); }
+  }
+
+  /* Clickable spooky images scattered around */
+  .clickable-image {
+    position: absolute;
+    cursor: pointer;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    z-index: 10;
+    pointer-events: auto;
+  }
+
+  .clickable-image:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+
+  .clickable-image.clicked {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* Grid container for houses */
   .grid-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    margin-top: 150px; /* Space for header/bugs */
-  }
-
-  .house-container {
-    background: linear-gradient(to bottom, #1a1a2e 0%, #16213e 100%);
-    border: 3px solid #f39c12;
-    border-radius: 10px;
-    padding: 20px;
-    min-height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: transform 0.3s ease;
+    padding: 100px 50px;
     position: relative;
     z-index: 1;
   }
 
-  .house-container:hover {
+  /* Hidden house containers */
+  .house-container {
+    background: transparent;
+    border: none;
+    padding: 40px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.5s ease;
+    position: relative;
+  }
+
+  /* Revealed state - shows house */
+  .house-container.revealed {
+    opacity: 1;
+    transform: scale(1);
+    background: rgba(0, 0, 0, 0.8);
+    border: 3px solid #f39c12;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
+  }
+
+  /* House image - clickable to load game */
+  .house-image {
+    max-width: 100%;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    border-radius: 8px;
+  }
+
+  .house-image:hover {
     transform: scale(1.05);
-    border-color: #e74c3c;
   }
 
-  .house-title {
-    color: #f39c12;
-    font-family: 'Courier New', monospace;
-    font-size: 1.2em;
-    margin-bottom: 10px;
+  /* Game iframe - hidden until house is clicked */
+  .game-iframe {
+    display: none;
+    width: 100%;
+    height: 600px;
+    border: none;
+    border-radius: 8px;
   }
 
-  .house-content {
-    color: #ccc;
-    font-family: 'Courier New', monospace;
-    text-align: center;
+  .game-iframe.active {
+    display: block;
+  }
+
+  /* Watermark link */
+  .watermark {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1001;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .watermark:hover {
+    transform: scale(1.1);
+  }
+
+  .watermark img {
+    width: 60px;
+    height: auto;
   }
 </style>
 </head>
 <body>
-  
- <img src="/images/bugs_(8).jpg"
-  height="125px"1200 400
-   width="150px"900 500
-   style="position: absolute;
-   top: 1000px; left: 225px;
-   bottom: 100px; right: 675px;" 
-   alt="fing">
 
-<!-- Bugs layer on top -->
+<!-- Spider walking across top -->
 <div class="bugs-layer">
   <img src="spider.jpg" alt="Spider" class="spider">
-  <!-- Add your other bugs here with proper paths -->
 </div>
 
 <div class="page-container">
+  
+  <!-- Clickable spooky image - hands4 triggers Death Clock -->
+  <img src="hands4.jpg" alt="Reaching Hand" class="clickable-image" 
+       style="top: 300px; right: 200px; width: 180px;" 
+       onclick="revealHouse(1)">
+  
+  <!-- More clickable images will go here as we add them -->
+
+  <!-- Grid of house containers -->
   <div class="grid-container">
-    <div class="house-container" onclick="knockDoor(1)">
-      <div class="house-title">🏚️ Haunted Mansion</div>
-      <div class="house-content">Click to knock...</div>
+    
+    <!-- Container 1: Death Clock -->
+    <div class="house-container" id="house1">
+      <img src="image4.jpg" 
+           alt="Spooky House" 
+           class="house-image" 
+           id="house1-image"
+           onclick="loadGame(1)">
+      <iframe src="" 
+              class="game-iframe" 
+              id="house1-game"
+              data-game-url="https://davi-combs.github.io/Death-clock/"></iframe>
     </div>
     
-    <div class="house-container" onclick="knockDoor(2)">
-      <div class="house-title">🧙 Witch's Cottage</div>
-      <div class="house-content">Click to knock...</div>
+    <!-- Container 2: Placeholder (we'll add 20 Questions next) -->
+    <div class="house-container" id="house2">
+      <!-- Will add next -->
     </div>
     
-    <div class="house-container" onclick="knockDoor(3)">
-      <div class="house-title">🏠 Spooky House</div>
-      <div class="house-content">Click to knock...</div>
+    <!-- Container 3: Placeholder (we'll add Hacked screen next) -->
+    <div class="house-container" id="house3">
+      <!-- Will add next -->
     </div>
     
-    <div class="house-container" onclick="knockDoor(4)">
-      <div class="house-title">⚰️ Graveyard Shack</div>
-      <div class="house-content">Click to knock...</div>
-    </div>
+    <!-- Containers 4-9: Placeholders -->
+    <div class="house-container" id="house4"></div>
+    <div class="house-container" id="house5"></div>
+    <div class="house-container" id="house6"></div>
+    <div class="house-container" id="house7"></div>
+    <div class="house-container" id="house8"></div>
+    <div class="house-container" id="house9"></div>
     
-    <div class="house-container" onclick="knockDoor(5)">
-      <div class="house-title">🎃 Pumpkin Patch</div>
-      <div class="house-content">Click to knock...</div>
-    </div>
-    
-    <div class="house-container" onclick="knockDoor(6)">
-      <div class="house-title">🦇 Vampire Castle</div>
-      <div class="house-content">Click to knock...</div>
-    </div>
-    
-    <div class="house-container" onclick="knockDoor(7)">
-      <div class="house-title">👻 Ghost Town</div>
-      <div class="house-content">Click to knock...</div>
-    </div>
-    
-    <div class="house-container" onclick="knockDoor(8)">
-      <div class="house-title">🕷️ Spider Den</div>
-      <div class="house-content">Click to knock...</div>
-    </div>
-    
-    <div class="house-container" onclick="knockDoor(9)">
-      <div class="house-title">🧟 Zombie Lair</div>
-      <div class="house-content">Click to knock...</div>
-    </div>
   </div>
 </div>
 
+<!-- Watermark linking to your story -->
+<a href="YOUR_STORY_URL_HERE" target="_blank" class="watermark">
+  <img src="button4.png" alt="🥀YYY">
+</a>
+
 <script>
-function knockDoor(houseNumber) {
-  // Add your trick or treat logic here
-  const houses = document.querySelectorAll('.house-container');
-  const house = houses[houseNumber - 1];
+// Reveal house container when clickable image is clicked
+function revealHouse(houseNumber) {
+  const house = document.getElementById('house' + houseNumber);
+  const clickedImage = event.target;
   
-  // Simple example - you can make this way more elaborate
-  const content = house.querySelector('.house-content');
-  const treats = ['🍬 Candy!', '🍭 Lollipop!', '🍫 Chocolate!', '👻 BOO!', '🎃 Pumpkin seeds!'];
-  const randomTreat = treats[Math.floor(Math.random() * treats.length)];
+  // Reveal the house with animation
+  house.classList.add('revealed');
   
-  content.innerHTML = randomTreat;
+  // Fade out the clicked trigger image
+  clickedImage.classList.add('clicked');
+}
+
+// Load game in iframe when house image is clicked
+function loadGame(houseNumber) {
+  const houseImage = document.getElementById('house' + houseNumber + '-image');
+  const gameIframe = document.getElementById('house' + houseNumber + '-game');
+  
+  // Hide house image
+  houseImage.style.display = 'none';
+  
+  // Show and load game
+  gameIframe.classList.add('active');
+  gameIframe.src = gameIframe.getAttribute('data-game-url');
 }
 </script>
 
