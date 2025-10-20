@@ -98,10 +98,17 @@
     box-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
   }
 
+  /* Curb marker (house number) */
+  .curb-marker {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+
   /* House image - clickable to load game */
   .house-image {
     max-width: 100%;
-    height: auto;
+    max-height: 300px;
     cursor: pointer;
     transition: transform 0.3s ease;
     border-radius: 8px;
@@ -122,6 +129,11 @@
 
   .game-iframe.active {
     display: block;
+  }
+
+  /* Hide house image when game loads */
+  .house-image.hidden {
+    display: none;
   }
 
   /* Watermark link */
@@ -148,7 +160,7 @@
 
 <!-- Spider walking across top -->
 <div class="bugs-layer">
-  <img src="spider.jpg" alt="Spider" class="spider">
+  <img src="images/spider.jpg" alt="Spider" class="spider">
 </div>
 
 <div class="page-container">
@@ -163,8 +175,9 @@
   <!-- Grid of house containers -->
   <div class="grid-container">
     
-    <!-- Container 1: Death Clock -->
+    <!-- Container 1: Death Clock - image04.jpg, curb04.png -->
     <div class="house-container" id="house1">
+      <img src="images/curb04.png" alt="House Number" class="curb-marker">
       <img src="images/image04.jpg" 
            alt="Spooky House" 
            class="house-image" 
@@ -221,7 +234,7 @@ function loadGame(houseNumber) {
   const gameIframe = document.getElementById('house' + houseNumber + '-game');
   
   // Hide house image
-  houseImage.style.display = 'none';
+  houseImage.classList.add('hidden');
   
   // Show and load game
   gameIframe.classList.add('active');
@@ -231,3 +244,4 @@ function loadGame(houseNumber) {
 
 </body>
 </html>
+
