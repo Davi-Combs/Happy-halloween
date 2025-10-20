@@ -4,6 +4,10 @@
 <title>Halloween Trick or Treat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <style>
+  * {
+    box-sizing: border-box;
+  }
+
   body {
     margin: 0;
     padding: 0;
@@ -67,17 +71,31 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    padding: 100px 50px;
+    padding: 150px 20px 50px 20px;
     position: relative;
     z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .grid-container {
+      grid-template-columns: 1fr;
+      padding: 150px 15px 50px 15px;
+    }
+    
+    .clickable-image {
+      width: 120px !important;
+    }
   }
 
   /* Hidden house containers */
   .house-container {
     background: transparent;
     border: none;
-    padding: 40px;
-    min-height: 300px;
+    padding: 30px;
+    min-height: 250px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -92,7 +110,7 @@
   .house-container.revealed {
     opacity: 1;
     transform: scale(1);
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.95);
     border: 3px solid #f39c12;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
@@ -100,9 +118,9 @@
 
   /* Curb marker (house number) */
   .curb-marker {
-    width: 150px;
+    width: 120px;
     height: auto;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
 
   /* House image - clickable to load game */
@@ -122,7 +140,7 @@
   .game-iframe {
     display: none;
     width: 100%;
-    height: 600px;
+    height: 500px;
     border: none;
     border-radius: 8px;
   }
@@ -131,8 +149,38 @@
     display: block;
   }
 
-  /* Hide house image when game loads */
+  /* Content image (for hacked screen, etc) */
+  .content-image {
+    display: none;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+
+  .content-image.active {
+    display: block;
+  }
+
+  /* Simple treat message */
+  .treat-message {
+    display: none;
+    color: #f39c12;
+    font-family: 'Courier New', monospace;
+    font-size: 2em;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(243, 156, 18, 0.8);
+  }
+
+  .treat-message.active {
+    display: block;
+  }
+
+  /* Hide house image when content loads */
   .house-image.hidden {
+    display: none;
+  }
+
+  .curb-marker.hidden {
     display: none;
   }
 
@@ -165,19 +213,49 @@
 
 <div class="page-container">
   
-  <!-- Clickable spooky image - hands4 triggers Death Clock -->
+  <!-- Clickable spooky images scattered around -->
   <img src="images/hands4.jpg" alt="Reaching Hand" class="clickable-image" 
-       style="top: 300px; right: 200px; width: 180px;" 
+       style="top: 200px; right: 15%; width: 150px;" 
        onclick="revealHouse(1)">
   
-  <!-- More clickable images will go here as we add them -->
+  <img src="images/buttons3.jpg" alt="Demon Eyes" class="clickable-image" 
+       style="top: 300px; left: 10%; width: 160px;" 
+       onclick="revealHouse(2)">
+  
+  <img src="images/buttons6.jpg" alt="Smiley Face" class="clickable-image" 
+       style="top: 500px; right: 20%; width: 140px;" 
+       onclick="revealHouse(3)">
+  
+  <img src="images/hands1.jpg" alt="Cupped Hand" class="clickable-image" 
+       style="top: 600px; left: 15%; width: 130px;" 
+       onclick="revealHouse(4)">
+  
+  <img src="images/buttons5.jpg" alt="NO" class="clickable-image" 
+       style="top: 400px; left: 50%; width: 150px;" 
+       onclick="revealHouse(5)">
+  
+  <img src="images/hands2.jpg" alt="Blue Hands" class="clickable-image" 
+       style="top: 700px; right: 10%; width: 140px;" 
+       onclick="revealHouse(6)">
+  
+  <img src="images/buttons7.jpg" alt="Moth Moon" class="clickable-image" 
+       style="top: 250px; left: 40%; width: 150px;" 
+       onclick="revealHouse(7)">
+  
+  <img src="images/hands3.jpg" alt="Handprints" class="clickable-image" 
+       style="top: 800px; left: 25%; width: 130px;" 
+       onclick="revealHouse(8)">
+  
+  <img src="images/buttons1.jpg" alt="Dark Planet" class="clickable-image" 
+       style="top: 550px; right: 30%; width: 120px;" 
+       onclick="revealHouse(9)">
 
   <!-- Grid of house containers -->
   <div class="grid-container">
     
-    <!-- Container 1: Death Clock - image04.jpg, curb04.png -->
+    <!-- Container 1: Death Clock -->
     <div class="house-container" id="house1">
-      <img src="images/curb04.png" alt="House Number" class="curb-marker">
+      <img src="images/curb03.png" alt="House Number" class="curb-marker" id="curb1">
       <img src="images/image04.jpg" 
            alt="Spooky House" 
            class="house-image" 
@@ -189,29 +267,130 @@
               data-game-url="https://davi-combs.github.io/Death-clock/"></iframe>
     </div>
     
-    <!-- Container 2: Placeholder (we'll add 20 Questions next) -->
+    <!-- Container 2: 20 Questions -->
     <div class="house-container" id="house2">
-      <!-- Will add next -->
+      <img src="images/curb07.png" alt="House Number" class="curb-marker" id="curb2">
+      <img src="images/image07.jpg" 
+           alt="Spooky House" 
+           class="house-image" 
+           id="house2-image"
+           onclick="loadGame(2)">
+      <iframe src="" 
+              class="game-iframe" 
+              id="house2-game"
+              data-game-url="https://davi-combs.github.io/20questions/"></iframe>
     </div>
     
-    <!-- Container 3: Placeholder (we'll add Hacked screen next) -->
+    <!-- Container 3: HACKED -->
     <div class="house-container" id="house3">
-      <!-- Will add next -->
+      <img src="images/curb02.png" alt="House Number" class="curb-marker" id="curb3">
+      <img src="images/image03.jpg" 
+           alt="Spooky House" 
+           class="house-image" 
+           id="house3-image"
+           onclick="showContent(3, 'hacked')">
+      <img src="images/hacked.jpg" 
+           alt="Hacked" 
+           class="content-image" 
+           id="house3-content">
     </div>
     
-    <!-- Containers 4-9: Placeholders -->
-    <div class="house-container" id="house4"></div>
-    <div class="house-container" id="house5"></div>
-    <div class="house-container" id="house6"></div>
-    <div class="house-container" id="house7"></div>
-    <div class="house-container" id="house8"></div>
-    <div class="house-container" id="house9"></div>
+    <!-- Container 4: Placeholder treat -->
+    <div class="house-container" id="house4">
+      <img src="images/curb01.png" alt="House Number" class="curb-marker" id="curb4">
+      <img src="images/image01.jpg" 
+           alt="Spooky House" 
+           class="house-image" 
+           id="house4-image"
+           onclick="showContent(4, 'treat')">
+      <div class="treat-message" id="house4-content">
+        🍬🍭<br>
+        You got candy!<br>
+        Sweet treats!
+      </div>
+    </div>
+    
+    <!-- Container 5: Placeholder treat -->
+    <div class="house-container" id="house5">
+      <img src="images/curb05.png" alt="House Number" class="curb-marker" id="curb5">
+      <img src="images/image02.jpg" 
+           alt="Spooky House" 
+           class="house-image" 
+           id="house5-image"
+           onclick="showContent(5, 'treat')">
+      <div class="treat-message" id="house5-content">
+        🎃<br>
+        Pumpkin seeds<br>
+        for you!
+      </div>
+    </div>
+    
+    <!-- Container 6: Placeholder treat -->
+    <div class="house-container" id="house6">
+      <img src="images/curb06.png" alt="House Number" class="curb-marker" id="curb6">
+      <img src="images/image05.png" 
+           alt="Spooky House" 
+           class="house-image" 
+           id="house6-image"
+           onclick="showContent(6, 'treat')">
+      <div class="treat-message" id="house6-content">
+        🍫<br>
+        Delicious<br>
+        chocolate!
+      </div>
+    </div>
+    
+    <!-- Container 7: Placeholder treat -->
+    <div class="house-container" id="house7">
+      <img src="images/curb08.png" alt="House Number" class="curb-marker" id="curb7">
+      <img src="images/image06.png" 
+           alt="Spooky House" 
+           class="house-image" 
+           id="house7-image"
+           onclick="showContent(7, 'treat')">
+      <div class="treat-message" id="house7-content">
+        👻<br>
+        BOO!<br>
+        Just kidding!<br>
+        Here's candy!
+      </div>
+    </div>
+    
+    <!-- Container 8: Placeholder treat -->
+    <div class="house-container" id="house8">
+      <img src="images/curb09.png" alt="House Number" class="curb-marker" id="curb8">
+      <img src="images/image08.png" 
+           alt="Spooky House" 
+           class="house-image" 
+           id="house8-image"
+           onclick="showContent(8, 'treat')">
+      <div class="treat-message" id="house8-content">
+        🦇<br>
+        Flying treats<br>
+        incoming!
+      </div>
+    </div>
+    
+    <!-- Container 9: Placeholder treat -->
+    <div class="house-container" id="house9">
+      <img src="images/curb04.png" alt="House Number" class="curb-marker" id="curb9">
+      <img src="images/image09.png" 
+           alt="Spooky House" 
+           class="house-image" 
+           id="house9-image"
+           onclick="showContent(9, 'treat')">
+      <div class="treat-message" id="house9-content">
+        🕸️<br>
+        Caught in the web<br>
+        of candy!
+      </div>
+    </div>
     
   </div>
 </div>
 
 <!-- Watermark linking to your story -->
-<a href="https://realest-story-fractured.github.io/TheRealestfractured/" target="_blank" class="watermark">
+<a href="YOUR_STORY_URL_HERE" target="_blank" class="watermark">
   <img src="images/buttons4.png" alt="🥀YYY">
 </a>
 
@@ -231,17 +410,32 @@ function revealHouse(houseNumber) {
 // Load game in iframe when house image is clicked
 function loadGame(houseNumber) {
   const houseImage = document.getElementById('house' + houseNumber + '-image');
+  const curb = document.getElementById('curb' + houseNumber);
   const gameIframe = document.getElementById('house' + houseNumber + '-game');
   
-  // Hide house image
+  // Hide house image and curb
   houseImage.classList.add('hidden');
+  curb.classList.add('hidden');
   
   // Show and load game
   gameIframe.classList.add('active');
   gameIframe.src = gameIframe.getAttribute('data-game-url');
 }
+
+// Show content (hacked screen or treat message)
+function showContent(houseNumber, type) {
+  const houseImage = document.getElementById('house' + houseNumber + '-image');
+  const curb = document.getElementById('curb' + houseNumber);
+  const content = document.getElementById('house' + houseNumber + '-content');
+  
+  // Hide house image and curb
+  houseImage.classList.add('hidden');
+  curb.classList.add('hidden');
+  
+  // Show content
+  content.classList.add('active');
+}
 </script>
 
 </body>
 </html>
-
